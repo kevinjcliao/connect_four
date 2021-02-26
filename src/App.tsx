@@ -5,20 +5,20 @@ const ROWS = 6;
 const COLUMNS = 7;
 const VICTORY_LENGTH = 4;
 
+type Row = (string | null)[];
+type Board = Row[];
+
 function App() {
   return (
     <body>
       <div className="App">
-        <Board />
+        <Game />
       </div>
     </body>
   );
 }
 
-class Board extends React.Component<
-  {},
-  { board: (string | null)[][]; xIsNext: boolean }
-> {
+class Game extends React.Component<{}, { board: Board; xIsNext: boolean }> {
   constructor(props: any) {
     super(props);
 
@@ -31,23 +31,17 @@ class Board extends React.Component<
   /**
    * Returns the string containing victor name, null if no victor yet.
    */
-  calculateVictor(board: (string | null)[][]): string | null {
+  calculateVictor(board: Board): string | null {
     // TODO: Implement diagonal victory check
     // Implement victory condition check for if a single row is victorious
-    const rowConditionChecker = (
-      row: (string | null)[],
-      winner: string
-    ): boolean => {
+    const rowConditionChecker = (row: Row, winner: string): boolean => {
       // Creates a substring to search for victory (e.g. XXXX)
       const victoryString = Array(VICTORY_LENGTH).fill(winner).join();
       // Checks if this substring exissts in this row.
       return row.join().includes(victoryString);
     };
 
-    const arrayConditionChecker = (
-      board: (string | null)[][],
-      winner: string
-    ): boolean => {
+    const arrayConditionChecker = (board: Board, winner: string): boolean => {
       return board.filter((row) => rowConditionChecker(row, winner)).length > 0;
     };
 
@@ -86,7 +80,7 @@ class Board extends React.Component<
   /**
    * Helper method.
    */
-  depositCoin(column_index: number, new_val: string): (string | null)[][] {
+  depositCoin(column_index: number, new_val: string): Board {
     const board = this.state.board.slice();
 
     const row_index = this.getRowIndexToDeposit(column_index);
@@ -103,7 +97,7 @@ class Board extends React.Component<
   /**
    * Returns the column as an array
    */
-  getColumn(column_index: number): (string | null)[] {
+  getColumn(column_index: number): Row {
     return this.state.board.slice().map((row) => row[column_index]);
   }
 
