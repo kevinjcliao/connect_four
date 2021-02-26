@@ -5,6 +5,11 @@ const ROWS = 6;
 const COLUMNS = 7;
 const VICTORY_LENGTH = 4;
 
+enum Player {
+  X = "X",
+  O = "O",
+}
+
 type Row = (string | null)[];
 type Board = Row[];
 
@@ -31,17 +36,17 @@ class Game extends React.Component<{}, { board: Board; xIsNext: boolean }> {
   /**
    * Returns the string containing victor name, null if no victor yet.
    */
-  calculateVictor(board: Board): string | null {
+  calculateVictor(board: Board): Player | null {
     // TODO: Implement diagonal victory check
     // Implement victory condition check for if a single row is victorious
-    const rowConditionChecker = (row: Row, winner: string): boolean => {
+    const rowConditionChecker = (row: Row, winner: Player): boolean => {
       // Creates a substring to search for victory (e.g. XXXX)
       const victoryString = Array(VICTORY_LENGTH).fill(winner).join();
       // Checks if this substring exissts in this row.
       return row.join().includes(victoryString);
     };
 
-    const arrayConditionChecker = (board: Board, winner: string): boolean => {
+    const arrayConditionChecker = (board: Board, winner: Player): boolean => {
       return board.filter((row) => rowConditionChecker(row, winner)).length > 0;
     };
 
@@ -50,18 +55,18 @@ class Game extends React.Component<{}, { board: Board; xIsNext: boolean }> {
       .map((_, index) => this.getColumn(index));
 
     const xWins =
-      arrayConditionChecker(board, "X") ||
-      arrayConditionChecker(transposedBoard, "X");
+      arrayConditionChecker(board, Player.X) ||
+      arrayConditionChecker(transposedBoard, Player.X);
     const oWins =
-      arrayConditionChecker(board, "O") ||
-      arrayConditionChecker(transposedBoard, "O");
+      arrayConditionChecker(board, Player.O) ||
+      arrayConditionChecker(transposedBoard, Player.O);
 
     if (xWins) {
-      return "X";
+      return Player.X;
     }
 
     if (oWins) {
-      return "O";
+      return Player.O;
     }
 
     return null;
